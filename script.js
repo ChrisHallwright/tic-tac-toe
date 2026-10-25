@@ -123,12 +123,12 @@ function createGame() {
 
   const checkResult = () => {
     if (gameBoard.playerWon(currentPlayer.player)) {
-      return `Player ${currentPlayer.player} won!!!`;
+      return `Player ${currentPlayer.player.toUpperCase()} won!!!`;
     } else if (gameBoard.getEmptySquares().length === 0) {
       return 'Draw';
     } else {
       changePlayer();
-      return `${currentPlayer.player}'s turn`;
+      return `${currentPlayer.player.toUpperCase()}'s turn`;
     }
   }
 
