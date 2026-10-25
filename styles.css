@@ -4,3 +4,21 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+h1 {
+  margin-bottom: 30px;
+}
+
+.game {
+  display: grid;
+  grid-template: repeat(3, 120px) / repeat(3, 120px);
+  gap: 5px;
+  margin-left: 30px;
+}
+
+.square {
+  background-color: cyan;
+  font-size: 3em;
+  padding-top: 30px;
+  padding-left: 50px;
+}
