@@ -26,7 +26,7 @@ const gameBoard = (() => {
       }
     };
     return result;
-  }
+  };
 
   const playerWon = (player) => {
 
@@ -57,9 +57,32 @@ const gameBoard = (() => {
       }
     }
     return false;
-  }
+  };
 
-  return { setSquare, getSquare, getEmptySquares, playerWon };
+  const clear = () => {
+    for (let x = 0; x < 3; x++) {
+      for (let y = 0; y < 3; y++) {
+        squares[x][y] = '';
+      }
+    }
+  };
+
+  const showBoard = () => {
+    let result = '';
+    for (let x = 0; x < 3; x++) {
+      for (let y = 0; y < 3; y++) {
+        if (squares[x][y] === '') {
+          result += '.';
+        } else {
+          result += squares[x][y];
+        }
+      }
+      result += '\n';
+    }
+    return result;
+  };
+
+  return { setSquare, getSquare, getEmptySquares, playerWon, clear, showBoard };
 })();
 
 function createPlayer(player) {
@@ -76,12 +99,49 @@ function createPlayer(player) {
     }
     if (!found) {
       alert(`Board position ${x}, ${y} is already set to ${gameBoard.getSquare(x, y)}`);
+      return false;
     }
 
     gameBoard.setSquare(x, y, player);
-    
+    return true;
   };
 
   return { player, takeTurn };
+}
+
+function createGame() {
+
+  const playerX = createPlayer('x');
+  const playerO = createPlayer('o');
+
+  gameBoard.clear();
+  let currentPlayer;
+
+  if (Math.floor(Math.random() * 2) === 0) {
+    currentPlayer = playerO;
+  } else {
+    currentPlayer = playerX;
+  }
+
+  const changePlayer = () => {
+    currentPlayer.player === 'x' ? currentPlayer = playerO : currentPlayer = playerX;
+  }
+
+  const checkResult = () => {
+    if (gameBoard.playerWon(currentPlayer.player)) {
+      return `Player ${currentPlayer.player} won!!!`;
+    } else if (gameBoard.getEmptySquares().length === 0) {
+      return 'Draw';
+    } else {
+      changePlayer();
+      return `${currentPlayer.player}'s turn`;
+    }
+  }
+
+  const getPlayer = () => {
+    return currentPlayer;
+  }
+
+  return { getPlayer, checkResult };
 }
 
