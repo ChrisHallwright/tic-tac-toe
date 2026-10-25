@@ -7,7 +7,7 @@
 
 body {
   display: grid;
-  grid-template: 70px 400px 60px / 400px 200px;
+  grid-template: 70px 400px 60px / 400px 400px;
 }
 
 h1 {
@@ -30,10 +30,19 @@ h1 {
   padding-left: 50px;
 }
 
-p {
-  font-size: 1.5em;
+.detail {
   grid-area: 2 / 2 / 3 / 3;
   padding-left: 30px;
+}
+
+p {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.detail > div {
+  padding-top: 5px;
 }
 
 button {

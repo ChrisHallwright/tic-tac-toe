@@ -77,10 +77,17 @@ const gameBoard = (() => {
     return currentGame;
   };
 
-  return { setSquare, getSquare, setGame, getGame, getEmptySquares, playerWon, clear };
+  const playerO = createPlayer('o');
+  const playerX = createPlayer('x');
+  const players = [playerO, playerX];
+
+  return { setSquare, getSquare, setGame, getGame, 
+    getEmptySquares, playerWon, clear, players };
 })();
 
 function createPlayer(player) {
+
+  let name;
 
   const takeTurn = (x, y) => {
 
@@ -100,13 +107,24 @@ function createPlayer(player) {
     }
   };
 
-  return { player, takeTurn };
+  const setName = (enteredName) => {
+    name = enteredName;
+  }
+
+  const getName = () => {
+    if (name) {
+      return name;
+    } else {
+      return `Player ${player.toUpperCase()}`;
+    }
+  }
+
+  return { player, takeTurn, setName, getName };
 }
 
 function createGame() {
 
-  const playerX = createPlayer('x');
-  const playerO = createPlayer('o');
+  const [playerO, playerX] = gameBoard.players;
 
   gameBoard.clear();
   let currentPlayer;
@@ -123,12 +141,12 @@ function createGame() {
 
   const checkResult = () => {
     if (gameBoard.playerWon(currentPlayer.player)) {
-      return `Player ${currentPlayer.player.toUpperCase()} won!!!`;
+      return `${currentPlayer.getName()} won!!!`;
     } else if (gameBoard.getEmptySquares().length === 0) {
       return 'Draw';
     } else {
       changePlayer();
-      return `${currentPlayer.player.toUpperCase()}'s turn`;
+      return `${currentPlayer.getName()}'s turn`;
     }
   }
 
@@ -192,6 +210,16 @@ const ui = (() => {
     gameBoard.clear();
     display.board();
     p.textContent = game.checkResult();
+  });
+
+  const oname = document.querySelector('#oname');
+  oname.addEventListener('change', (e) => {
+    gameBoard.players[0].setName(oname.value);
+  });
+
+  const xname = document.querySelector('#xname');
+  xname.addEventListener('change', (e) => {
+    gameBoard.players[1].setName(xname.value);
   });
 
 })();
