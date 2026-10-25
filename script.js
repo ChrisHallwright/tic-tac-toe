@@ -4,6 +4,8 @@ const gameBoard = (() => {
     ['', '', ''],
     ['', '', '']];
 
+  let currentGame;
+
   const setSquare = (x, y, piece) => {
     if (getSquare(x, y) === '') {
       squares[x][y] = piece;
@@ -67,22 +69,15 @@ const gameBoard = (() => {
     }
   };
 
-  const showBoard = () => {
-    let result = '';
-    for (let x = 0; x < 3; x++) {
-      for (let y = 0; y < 3; y++) {
-        if (squares[x][y] === '') {
-          result += '.';
-        } else {
-          result += squares[x][y];
-        }
-      }
-      result += '\n';
-    }
-    return result;
+  const setGame = (game) => {
+    currentGame = game;
   };
 
-  return { setSquare, getSquare, getEmptySquares, playerWon, clear, showBoard };
+  const getGame = () => {
+    return currentGame;
+  };
+
+  return { setSquare, getSquare, setGame, getGame, getEmptySquares, playerWon, clear };
 })();
 
 function createPlayer(player) {
@@ -97,13 +92,12 @@ function createPlayer(player) {
         break;
       }
     }
-    if (!found) {
-      alert(`Board position ${x}, ${y} is already set to ${gameBoard.getSquare(x, y)}`);
+    if (found) {
+      gameBoard.setSquare(x, y, player);
+      return true;
+    } else {
       return false;
     }
-
-    gameBoard.setSquare(x, y, player);
-    return true;
   };
 
   return { player, takeTurn };
@@ -142,6 +136,64 @@ function createGame() {
     return currentPlayer;
   }
 
-  return { getPlayer, checkResult };
+  const game = { getPlayer, checkResult };
+  gameBoard.setGame(game);
+
+  return game;
 }
+
+const display = (() => {
+
+  const square = (x, y) => {
+    const pos = 3 * x + y + 1;
+    const element = document.querySelector(`[class^="square"]:nth-child(${pos})`);
+    element.textContent = gameBoard.getSquare(x, y);
+  };
+
+  const board = () => {
+    for (let x = 0; x < 3; x++) {
+      for (let y = 0; y < 3; y++) {
+        square(x, y);
+      }
+    }
+  }
+
+  return { square, board }
+})();
+
+const ui = (() => {
+
+  let x;
+  let y;
+  let game = createGame();
+  let player;
+
+  const p = document.querySelector('p');
+  p.textContent = game.checkResult();
+
+  for (sq of document.querySelectorAll('[class^="square"]')) {
+    sq.addEventListener('click', (e) => {
+      x = parseInt(e.target.className.slice(6, 7));
+      y = parseInt(e.target.className.slice(7, 8));
+
+      game = gameBoard.getGame();
+      player = game.getPlayer();
+
+      if (player.takeTurn(x, y)) {
+        display.square(x, y, player.player);
+        p.textContent = game.checkResult();
+      }
+    });
+  }
+
+  const btn = document.querySelector('button');
+  btn.addEventListener('click', (e) => {
+    const game = createGame();
+    gameBoard.clear();
+    display.board();
+    p.textContent = game.checkResult();
+  });
+
+})();
+
 

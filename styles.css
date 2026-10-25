@@ -16,7 +16,7 @@ h1 {
   margin-left: 30px;
 }
 
-.square {
+[class^='square'] {
   background-color: cyan;
   font-size: 3em;
   padding-top: 30px;
